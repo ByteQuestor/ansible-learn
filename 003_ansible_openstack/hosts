@@ -1,0 +1,7 @@
+# 注意不能有空格，且此列表里都需要配置免密钥（本机也要）
+openstack-1 ansible_ssh_host=192.168.100.10 ansible_ssh_port=22
+openstack-2 ansible_ssh_host=192.168.100.20 ansible_ssh_port=22
+[controller]
+openstack-1
+[compute]
+openstack-2

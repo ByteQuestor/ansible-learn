@@ -1,0 +1,14 @@
+- name: "环境准备"
+  tasks:
+    - name: "关闭防火墙"
+      command: systemctl stop firewalld
+    - name: "禁止防火墙自启动"
+      command: systemctl disble firewalld
+    - name: "设置selinux策略"
+      command: setenforce 0
+    - name: "永久设置selinux策略"
+      command: sed -i "s/SELINUX=.*/SELINUX=disabled/g" /etc/selinux/config
+    - name: "清理yum源"
+      shell: rm -rf /etc/yum.repos.d/*
+
+    
