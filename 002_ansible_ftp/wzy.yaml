@@ -1,47 +1,46 @@
-- name: firewalld
+- name: "准备工作"
   hosts:
     - all
   tasks: 
-    - name: stop firewalld
+    - name: "关闭防火墙"
       command: systemctl stop firewalld
-    - name: disable firewalld
+    - name: "禁止防火墙自启动"
       command: systemctl disable firewalld
-    - name: delete yum
-      command: rm -rf /etc/yum.repos.d/*
-    - name: config yum
+    - name: "删除原有的yum源"
+      shell: rm -rf /etc/yum.repos.d/*
+
+- name: "控制节点仓库"
+  hosts:
+    - controller
+    - name: "复制我们的本地yum源"
       copy:
         src: /etc/ansible/roles/ftp/file/local.repo
         dest: /etc/yum.repos.d/local.repo
-- name: controller registory
-  hosts:
-    - controller
-    - name: create registory
+    - name: "创建仓库"
       command: mkdir /opt/{centos,iaas}
-    - name: mount centos
+    - name: "挂载centos"
       command: mount /root/CentOS-7-x86_64-DVD-2009.iso /mnt/
-    - name: copy centos
-      command: copy /mnt/* /opt/centos
-    - name: un mount 
+    - name: "复制到centos仓库"
+      shell: copy /mnt/* /opt/centos
+    - name: "取消挂载"
       command: umount /mnt/
-    - name: mount centos
+    - name: "挂载 iaas"
       command: mount /root/chinaskills_cloud_iaas_v2.0.3.iso /mnt/
     - name: copy centos
       command: copy /mnt/* /opt/centos
-    - name: un mount 
+    - name: "取消挂载" 
       command: umount /mnt/
-    - name: install vsftpd
+    - name: "安装vsftpd"
       command: yum install -y vsftpd
-    - name: config vsftpd
+    - name: "配置vsftpd"
       copy:
         src: /etc/ansible/roles/ftp/file/vsftpd.sh
         dest: /root/vsftpd.sh
       command: bash /root/vsftpd.sh
-- name: compute registory
+- name: "计算节点仓库"
   hosts:
     - compute
-    - name: delete yum
-      command: rm -rf /etc/yum.repos.d/*
-    - name: copy yum
+    - name: "复制ftp仓库配置"
       copy:
         src: /etc/ansible/roles/ftp/file/ftp.repo
         dist: /etc/yum.repos.d/local.repo
