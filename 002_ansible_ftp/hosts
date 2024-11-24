@@ -16,8 +16,9 @@
 ## 192.168.100.10
 
 # Ex 2: A collection of hosts belonging to the 'webservers' group
-openstack-1 ansible_ssh_host = controller ansible_ssh_port = 22
-openstack-2 ansible_ssh_host = compute ansible_ssh_port = 22
+# 注意不能有空格
+openstack-1 ansible_ssh_host=controller ansible_ssh_port=22
+openstack-2 ansible_ssh_host=compute ansible_ssh_port=22
 [controller]
 openstack-1 controller
 [compute]
