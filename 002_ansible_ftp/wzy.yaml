@@ -1,0 +1,48 @@
+- name: firewalld
+  hosts:
+    - all
+  tasks: 
+    - name: stop firewalld
+      command: systemctl stop firewalld
+    - name: disable firewalld
+      command: systemctl disable firewalld
+    - name: delete yum
+      command: rm -rf /etc/yum.repos.d/*
+    - name: config yum
+      copy:
+        src: /etc/ansible/roles/ftp/file/local.repo
+        dist: /etc/yum.repos.d/local.repo
+- name: controller registory
+  hosts:
+    - controller
+    - name: create registory
+      command: mkdir /opt/{centos,iaas}
+    - name: mount centos
+      command: mount /root/CentOS-7-x86_64-DVD-2009.iso /mnt/
+    - name: copy centos
+      command: copy /mnt/* /opt/centos
+    - name: un mount 
+      command: umount /mnt/
+    - name: mount centos
+      command: mount /root/chinaskills_cloud_iaas_v2.0.3.iso /mnt/
+    - name: copy centos
+      command: copy /mnt/* /opt/centos
+    - name: un mount 
+      command: umount /mnt/
+    - name: install vsftpd
+      command: yum install -y vsftpd
+    - name: config vsftpd
+      copy:
+        src: /etc/ansible/roles/ftp/file/vsftpd.sh
+        dist: /root/vsftpd.sh
+      command: bash /root/vsftpd.sh
+- name: compute registory
+  hosts:
+    - compute
+    - name: delete yum
+      command: rm -rf /etc/yum.repos.d/*
+    - name: copy yum
+      copy:
+        src: /etc/ansible/roles/ftp/file/ftp.repo
+        dist: /etc/yum.repos.d/local.repo
+      

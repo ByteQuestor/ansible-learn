@@ -1,0 +1,10 @@
+[centos]
+name=centos
+gpgcheck=0
+enabled=1
+baseurl=ftp://controller/centos
+[iaas]
+name=iaas
+gpgcheck=0
+enabled=1
+baseurl=ftp://controller/iaas/iaas-repo

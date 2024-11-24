@@ -1,0 +1,10 @@
+[centos]
+name=centos
+gpgcheck=0
+enabled=1
+baseurl=file:///opt/centos
+[iaas]
+name=iaas
+gpgcheck=0
+enabled=1
+baseurl=file:///opt/iaas/iaas-repo
