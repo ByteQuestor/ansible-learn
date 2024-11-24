@@ -11,7 +11,7 @@
     - name: config yum
       copy:
         src: /etc/ansible/roles/ftp/file/local.repo
-        dist: /etc/yum.repos.d/local.repo
+        dest: /etc/yum.repos.d/local.repo
 - name: controller registory
   hosts:
     - controller
@@ -34,7 +34,7 @@
     - name: config vsftpd
       copy:
         src: /etc/ansible/roles/ftp/file/vsftpd.sh
-        dist: /root/vsftpd.sh
+        dest: /root/vsftpd.sh
       command: bash /root/vsftpd.sh
 - name: compute registory
   hosts:
