@@ -12,36 +12,40 @@
 - name: "控制节点仓库"
   hosts:
     - controller
+  tasks:
     - name: "复制我们的本地yum源"
       copy:
         src: /etc/ansible/roles/ftp/file/local.repo
         dest: /etc/yum.repos.d/local.repo
-    - name: "创建仓库"
-      command: mkdir /opt/{centos,iaas}
+    - name: "为了防止冲突，提前取消挂载"
+      command: umount /mnt/
     - name: "挂载centos"
       command: mount /root/CentOS-7-x86_64-DVD-2009.iso /mnt/
+    - name: "创建centos仓库"
+      command: mkdir /opt/centos
     - name: "复制到centos仓库"
-      shell: copy /mnt/* /opt/centos
+      shell: cp -rf /mnt/* /opt/centos
     - name: "取消挂载"
       command: umount /mnt/
     - name: "挂载 iaas"
       command: mount /root/chinaskills_cloud_iaas_v2.0.3.iso /mnt/
-    - name: copy centos
-      command: copy /mnt/* /opt/centos
+    - name: "创建iaas仓库"
+      command: mkdir /opt/iaas
+    - name: "复制 iaas"
+      shell: cp -rf /mnt/* /opt/iaas
     - name: "取消挂载" 
       command: umount /mnt/
     - name: "安装vsftpd"
       command: yum install -y vsftpd
     - name: "配置vsftpd"
-      copy:
-        src: /etc/ansible/roles/ftp/file/vsftpd.sh
-        dest: /root/vsftpd.sh
-      command: bash /root/vsftpd.sh
+      shell: echo anon_root=/opt/ >> /etc/vsftpd/vsftpd.conf
+    - name: "重启vsftpd"
+      shell: systemctl enable --now vsftpd
 - name: "计算节点仓库"
   hosts:
     - compute
     - name: "复制ftp仓库配置"
       copy:
         src: /etc/ansible/roles/ftp/file/ftp.repo
-        dist: /etc/yum.repos.d/local.repo
+        dest: /etc/yum.repos.d/local.repo
       
